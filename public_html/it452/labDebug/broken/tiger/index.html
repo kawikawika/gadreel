@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+
+<!-- A bare bones web page to start assignments with --> 
+
+<html>
+
+<head>
+  <title>IT 452 DOM demo</title>
+  <meta charset="utf-8" />
+
+  <script type="text/javascript" >
+     <!--
+    var currentAction = "blue";
+      
+    function doupdate(curNode ) {
+         var parent = curNode.parentNode;
+         if (currentAction == "insert") {
+             newThing = document.createElement("td");
+             parent.insertBefore(newThing, curNode);
+             newThing.innerHTML = "hello";
+             newThing.onclick   = function() {doupdate(this)};
+         }
+         else if (currentAction == "delete") {
+             parent.removeChild(curNode);
+         }
+         else if (currentAction == "edit") {
+             curNode.firstChild.nodeValue =
+                 window.prompt("Enter new text", curNode.innerHTML);
+         }
+         else if (currentAction == "parent") {
+             var kids = parent.childNodes;
+             window.alert("Number children: "+kids.length);
+             window.alert("Type of first: "+kids[0].nodeType);
+         }
+         else {
+            curNode.style.backgroundColor = currentAction;   
+        }
+      }
+    
+     // -->
+   </script>
+</head>
+
+<body>
+
+  <h1> IT 452 DOM demo </h1>
+  <p>Tools:</p>
+  <ul>
+      <li onclick="currentAction=' red'    "> Set red  </li>
+      <li onclick="currentAction='blue'  "> Set blue </li>
+      <li onclick="currentAction='insert'"> Insert   </li>
+      <li onclick="currentAction='delete'"> Delete   </li>
+      <li onclick="currentAction='edit'  "> Edit   </li>
+      <li onclick="currentAction='parent'"> Parent </li>
+  </ul>
+      
+ 
+  <table border="1">
+       <tr>
+         <td onclick="doupdate(this)"> thing 1 </td>
+         <td onclick="doupdate(this)"> thing 2 </td>
+       </tr>
+       <tr>
+         <td onclick="doupdate(this)"> thing 3 </td>
+         <td onclick="doupdate(this)"> thing 4 </td>
+       </tr>
+  </table>
+        
+  <!-- ***************************************************************
+       Below this point is text you should include on every page
+       *************************************************************** -->
+  
+  <p><br/><br/> </p>
+  <hr/>
+  <p>
+       <script type = "text/javascript">
+     document.write('<a href="http://intranet.cs.usna.edu:8888/?doc='+document.location+'">' +
+        '<img src="http://www.w3.org/html/logo/img/mark-word-icon.png"'+
+        'alt="Valid HTML 5!" height="50" width="50" />'+
+      '</a>');
+    </script>  
+    This page last modified 
+    <script type="text/javascript">
+      document.write(document.lastModified);
+    </script>
+  </p>
+  
+
+
+</body>
+
+</html>
+  

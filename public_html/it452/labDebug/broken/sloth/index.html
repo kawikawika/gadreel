@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<!-- A bare bones web page to start assignments with --> 
+<html>
+
+
+  <title>AJAX demo</title>
+  <meta charset="utf-8" />
+  <script type="text/javascript" >
+     <!--
+    var currentAction = "red";
+     // Called to handle "click on cell" event      
+     function doupdate(curNode ) {
+         var node = curNode;
+         if (currentAction == "insert") {
+             newThing = document.createElement("td");
+             node.parentNode.appendChild(newThing, curNode);   // add to end of current row
+             newThing.innerHTML = "hello";
+             newThing.onclick   = doupdateDYN;
+         }
+         else {
+            curNode.style.backgroundColor = currentAction;   
+        }
+      }
+    
+      function doupdateDYN() {
+        doupdate(this);   
+      }
+      
+      // Inserts a new row into the table, and makes a cell for each item in the array 'elems'
+      function insertRow(elems) {
+        // First, make the new row
+        var newTR = document.createElement("tr");
+        
+        // Now add a child <td> for each argument
+        for (var i =0; i < elems.length; i++) {
+           // Create the <td>
+           newTD = document.createElement("td");
+           newTD.innerHTML = elems[i];
+           newTD.onclick   = doupdateDYN;
+
+           // Add it to the row
+           newTR.appendChild(newTD);   
+        }
+        
+        // Finally, add the row to the table
+        var theTable = document.getElementById("mytablebody");
+        theTable.appendChild(newTR);
+        //alert("reached end");
+      }
+
+      // Inserts "this is a new row" as a new row in the table      
+      function handleQuery() {
+        var elems = [ "this", "is", "a", "new", "row" ];
+        insertRow(elems);   
+        return false;  // false prevents form from actually submitting          
+      }
+      
+                  
+     // -->
+   </script>
+</head>
+
+<body>
+
+  <h1> AJAX demo </h1>
+  <p>Tools:</p>
+  <ul>
+      <li onclick="currentAction='red'   "> Set red  </li>
+      <li onclick="currentAction='blue'  "> Set blue </li>
+      <li onclick="currentAction='insert'"> Add to end of current row </li>
+  </ul>
+           
+  <table border="1" id="mytablebody">
+     <tbody >  
+       <tr>
+         <td onclick="doupdate(this)"> thing 1 </td>
+         <td onclick="doupdate(this)"> thing 2 </td>
+       </tr>
+       <tr>
+         <td onclick="doupdate(this)"> thing 3 </td>
+         <td onclick="doupdate(this)"> thing 4 </td>
+       </tr>
+     </tbody>
+  </table>
+       
+  <!-- ***************************************************************
+
+
+  
+  <p><br/><br/> </p>
+  <hr/>
+  <p>
+       <script type = "text/javascript">
+     document.write('<a href="http://intranet.cs.usna.edu:8888/?doc='+document.location+'">' +
+        '<img src="http://www.w3.org/html/logo/img/mark-word-icon.png"'+
+        'alt="Valid HTML 5!" height="50" width="50" />'+
+      '</a>');
+    </script>  
+    This page last modified 
+    <script type="text/javascript">
+      document.write(document.lastModified);
+    </script>
+  </p>
+  
+
+
+
+
+</body>
+
+
+
+</html>
+
+  

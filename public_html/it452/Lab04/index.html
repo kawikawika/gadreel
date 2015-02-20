@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<!--PORTIONS OF THIS CODE WAS RETRIEVED FROM  http://tympanus.net/codrops/2014/03/21/google-grid-gallery -->
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+		<title>University Exchange</title>
+		<meta name="author" content="Kawika Barabin" />
+		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="css/home.css" />
+		<link rel="stylesheet" type="text/css" href="css/flaticon.css" />
+		<link rel="stylesheet" type="text/css" href="css/jquery.autocomplete.css" />
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="js/modernizr.custom.js"></script>
+	</head>
+	<body onload="loadItems()">
+		<div id="container" class="container">
+			<header class="clearfix">
+				<h1>University Exchange</h1>
+				<h4>Buy. Sell. Share.</h4>
+			</header>
+			<div id="grid-gallery" class="grid-gallery">
+				<section class="grid-wrap">
+					<h2 style="display:none"> hello </h2>
+					<ul class="grid">
+						<li class="grid-sizer"></li><!-- for Masonry column width -->
+					</ul>
+				</section><!-- // grid-wrap -->
+				<section class="slideshow">
+					<h2 style="display:none"> hello </h2>
+					<ul></ul>
+					<nav>
+						<span class="icon nav-close"></span>
+					</nav>
+				</section><!-- // slideshow -->
+			</div><!-- // grid-gallery -->
+			<form class="searchbox" onsubmit="return false">
+				<input id="query" type="search" placeholder="Search, Filter, or Sort Posts" name="search" class="searchbox-input" required>
+				<input type="submit" class="searchbox-submit" value="GO">
+				<span class="searchbox-icon flaticon-table35"></span>
+				<div class="acResults" style="display: none;">
+<!--
+				<ul class="searchbox-results">
+					<li>Filter: "Looking For"</li>
+					<li>Filter: "Post"</li>
+					<li>Sort: "Price"</li>
+					<li>Sort: "Location"</li>
+				</ul>
+-->
+				</div>
+			</form>
+
+			<div class="post">
+				<span class="post-icon flaticon-edit30" onclick="openPost()"></span>
+				<div class="post-show">
+					<nav>
+						<span class="icon nav-close" onclick="closePost()"></span>
+					</nav>
+					<iframe id="iframe-post"></iframe>	
+					
+<!--               <form class="post-show-content" onsubmit="return false;">-->
+<!--                  <h2>Post</h2>-->
+<!--                  <input type="text" name="user_id" value="1" hidden> 				-->
+
+<!--                  <p><label>Item Name:</label><input type="text" name="item_name"></p>-->
+
+<!--                  <p><label>Price:</label><input type="text" name="price"></p>-->
+
+<!--                  <p><label>Description:</label><textarea class="post-description" name="description"></textarea></p>-->
+<!--                  <p><input type="file" name="picture" placeholder="Choose file"></p>-->
+
+<!--                  <p><input type="submit" onclick="submitPost()" value="POST"></p>-->
+<!--               </form>-->
+				</div>
+			</div>
+
+		</div>
+		<!-- FOR CLASS -->
+		<p><br/><br/> </p>
+		<hr/>
+		<p>
+			<script type = "text/javascript">
+				document.write('<a href="http://intranet.cs.usna.edu:8888/?doc='+document.location+'">' +
+						'<img src="http://www.w3.org/html/logo/img/mark-word-icon.png"'+
+						'alt="Valid HTML 5!" height="50" width="50" />'+
+						'</a>');
+			</script>  
+			This page last modified 
+			<script type="text/javascript">
+				document.write(document.lastModified);
+			</script>
+		</p>
+		<!-- FOR CLASS -->
+            
+		<script src="js/imagesloaded.pkgd.min.js"></script>
+		<script src="js/masonry.pkgd.min.js"></script>
+		<script src="js/classie.js"></script>
+		<script src="js/cbpGridGallery.js"></script>
+		<script src="js/jquery.autocomplete.js"></script>
+		<script src="js/myscripts.js"></script>
+	</body>
+</html>

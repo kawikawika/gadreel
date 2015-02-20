@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<!--PORTIONS OF THIS CODE WAS RETRIEVED FROM  http://tympanus.net/codrops/2014/03/21/google-grid-gallery -->
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+		<title>University Exchange</title>
+		<meta name="author" content="Kawika Barabin" />
+		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="css/uniex.css" />
+		<link rel="stylesheet" type="text/css" href="css/navMorph.css" />
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="js/modernizr.custom.js"></script>
+	</head>
+	<body onload="loadItems()">
+		<div id="container" class="container">
+			<header class="clearfix">
+				<h1>University Exchange</h1>
+				<h4>Making college a better experience.</h4>
+			</header>
+			<div id="grid-gallery" class="grid-gallery">
+				<section class="grid-wrap">
+				<h4 style="display:hidden">to satisfy html validation</h4>
+					<ul class="grid">
+						<li class="grid-sizer"></li><!-- for Masonry column width -->
+					</ul>
+				</section><!-- // grid-wrap -->
+				<!-- TODO: would like to incorporate the slide show into the lab somehow-->
+				<section class="slideshow">
+				<h4 style="display:hidden">to satisfy html validation</h4>
+					<ul></ul>
+					<nav>
+						<span class="icon nav-prev"></span>
+						<span class="icon nav-next"></span>
+						<span class="icon nav-close"></span>
+					</nav>
+					<div class="info-keys icon">Navigate with arrow keys</div>
+				</section><!-- // slideshow -->
+			</div><!-- // grid-gallery -->
+		</div>
+		<div class="morph-button morph-button-sidebar morph-button-fixed">
+			<button type="button" onclick="loadMessages()"><span class="morph-icon morph-icon-cog">Settings Menu</span></button>
+			<div class="morph-content">
+				<div>
+					<div class="content-style-sidebar">
+						<span class="morph-icon morph-icon-close">Close the overlay</span>
+						<h2>Messages</h2>
+						<ul id="messages"></ul>
+					</div>
+				</div>
+			</div>
+		</div><!-- morph-button -->
+		<!-- FOR IT452 -->
+		<p><br/><br/> </p>
+		<hr/>
+		<p>
+			<script type = "text/javascript">
+				document.write('<a href="http://intranet.cs.usna.edu:8888/?doc='+document.location+'">' +
+						'<img src="http://www.w3.org/html/logo/img/mark-word-icon.png"'+
+						'alt="Valid HTML 5!" height="50" width="50" />'+
+						'</a>');
+			</script>  
+			This page last modified 
+			<script type="text/javascript">
+				document.write(document.lastModified);
+			</script>
+		</p>
+		<script src="js/imagesloaded.pkgd.min.js"></script>
+		<script src="js/masonry.pkgd.min.js"></script>
+		<script src="js/classie.js"></script>
+		<script src="js/cbpGridGallery.js"></script>
+		<script src="js/uiMorphingButton_fixed.js"></script>
+		<script src="js/myscripts.js"></script>
+	</body>
+</html>

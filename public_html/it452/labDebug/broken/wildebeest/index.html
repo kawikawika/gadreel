@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<!-- A bare bones web page to start assignments with --> 
+<html>
+<head>
+  <title>AJAX demo</title>
+  <meta charset="utf-8" />
+
+	<script>
+    var currentAction = "red";
+
+    var xhrActive = false;
+    
+     // Called to handle "click on cell" event      
+     function doupdate(curNode ) {
+         var parent = curNode.parentNode;
+         if (currentAction == "insert") {
+             newThing = document.createElement("td");
+             parent.insertBefore(newThing, curNode);
+             newThing.innerHTML = "hello";
+             newThing.onclick   = doupdateDYN;
+         }
+         else if (currentAction == "delete") {
+             parent.removeChild(curNode);
+         }
+         else if (currentAction == "edit") {
+             curNode.firstChild.nodeValue =
+                 window.prompt("Enter new text", curNode.innerHTML);
+         }
+         else {
+            curNode.style.backgroundColor = currentAction;   
+        }
+      }
+    
+      function doupdateDYN() {
+        doupdate(this);   
+      }
+      
+      // Inserts a new row into the table, and makes a cell for each item in the array 'elems'
+      function insertRow(elems) {
+        // First, make the new row
+        var newTR = document.createElement("tr");
+        
+        // Now add a child <td> for each argument
+        for (var i =0; i < elems.length; i++) {
+           // Create the <td>
+           newTD = document.createElement("td");
+           newTD.innerHTML = elems[i];
+           newTD.onclick   = doupdateDYN;
+
+           // Add it to the row
+           newTR.appendChild(newTD);   
+        }
+        
+        // Finally, add the row to the table
+        var theTable = document.getElementById("mytablebody");
+        theTable.appendChild(newTR);
+        //alert("reached end");
+      }
+
+      // Make a-synchronous call to server to get data for a new row      
+      function handleQuery() {
+        if (xhrActive) {
+            alert("Still busy, be patient!");
+            return false;   // ignore if busy already  
+        }
+          
+        xhr = window.ActiveXObject 
+                    ? new ActiveXObject("Microsoft.XMLHTTP")
+                    : new XMLHttpRequest();
+
+        // Start getting data from server        
+        xhr.open("GET", "dummy_data3.xml", true);
+        xhr.onreadystatechange = handleResponse;
+        xhr.send(null);  // GET, so no "data" part
+
+        xhrActive = true;
+        return false;  // false prevents the form from actually submitting          
+      }
+
+      // Parse an XML response and use to insert new row into table
+      function handleResponse() {
+        if (xhr.readyState != 4) {
+            // not finished yet
+            return;   
+        }
+          
+        // Deal with results        
+        if (xhr.status != 200) {
+          alert("Error with results! Status code: "+xhr.status);        
+        }
+        else {        
+          // Use DOM to get data from the XML response
+          var root  = xhr.responseXML.documentElement;  // Returns DOM root element
+          var nodes = root.childNodes
+
+          //window.alert("number of children: "+nodes.length);
+          
+          // Get each child and add it to an array
+          var elems = []; // empty starting array
+          for (var i=0; i<nodes.length; i++) {
+              
+//        alert(nodes[i].nodeName);  // useful for seeing what the nodes are
+
+            if (nodes[i].nodeType == 1){  // type 1 is an ELEMENT   
+               var oneElem = nodes[i].childNodes[0].nodeValue;
+               elems[elems.length] = oneElem; // add to array
+            }
+          }          
+          
+          // Make new row with this data
+          insertRow(elems);   
+
+          xhrActive = false;
+        }
+      }    
+      
+      
+                  
+   </script>
+</head>
+
+<body>
+
+  <h1> AJAX demo </h1>
+  <p>Tools:</p>
+  <ul>
+      <li onclick="currentAction='red'   "> Set red  </li>
+      <li onclick="currentAction='blue'  "> Set blue </li>
+      <li onclick="currentAction='insert'"> Insert   </li>
+      <li onclick="currentAction='delete'"> Delete   </li>
+      <li onclick="currentAction='edit'  "> Edit   </li>
+  </ul>
+      
+  <form method="get" action="#" onsubmit="return handleQuery()">
+     <p>User name: 
+       <input name="query_str" type="text" />
+       <input name="query_act" type="submit" value="Query" />
+     </p>
+  </form>     
+     
+  <table border="1">
+     <tbody id="mytablebody">  
+       <tr>
+         <td onclick="doupdate(this)"> thing 1 </td>
+         <td onclick="doupdate(this)"> thing 2 </td>
+       </tr>
+       <tr>
+         <td onclick="doupdate(this)"> thing 3 </td>
+         <td onclick="doupdate(this)"> thing 4 </td>
+       </tr>
+     </tbody>
+  </table>
+       
+  <!-- ***************************************************************
+       Below this point is text you should include on every page
+       *************************************************************** -->
+  
+  <p><br/><br/> </p>
+  <hr/>
+  <p>
+       <script type = "text/javascript">
+     document.write('<a href="http://intranet.cs.usna.edu:8888/?doc='+document.location+'">' +
+        '<img src="http://www.w3.org/html/logo/img/mark-word-icon.png"'+
+        'alt="Valid HTML 5!" height="50" width="50" />'+
+      '</a>');
+    </script>  
+    This page last modified 
+    <script type="text/javascript">
+      document.write(document.lastModified);
+    </script>
+  </p>
+  
+
+
+
+</body>
+
+
+
+</html>
+
+  

@@ -1,0 +1,33 @@
+<?xml version = "1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11//DTD/xhtml11.dtd">
+<html xmlns = "http://www.w3.org/1999/xhtml">
+<head>
+<title>IT 452 DOM demo</title>
+<script type="text/javascript" >
+<!-- Your code on the next page will go here -->
+function makeList(n) {
+	var mainList = document.getElementById('mainList');
+	for(var i = 0; i<n; i++) {
+		var li = document.createElement('li');
+		li.onclick = function() {
+			moveItem(this);
+		}
+		li.innerHTML = "This is item "+i;
+		mainList.appendChild(li);
+	}
+}
+
+function moveItem(item) {
+	var targetList = document.getElementById('targetList');
+	targetList.appendChild(item);
+}
+</script>
+</head>
+<body>
+<h3>Choices</h3>
+<ul id="mainList"></ul>
+<h3>Favorites</h3>
+<ul id="targetList"></ul>
+</body>
+</html>

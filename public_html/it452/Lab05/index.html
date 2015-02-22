@@ -78,7 +78,6 @@
 			// add a new function to JQuery
 			// will allow insertion at index of a JQuery object
 			$.prototype.insert = function(i,e) {
-				console.log(e);
 				if(e instanceof Array) {
 					var self = this;
 					e.forEach(function(e,j,a) {
@@ -277,7 +276,6 @@
 			var speed = null;
 			function start() {
 				// set the game to active
-				console.log('here');
 				active = true;
 
 				// set the score of the game to 0

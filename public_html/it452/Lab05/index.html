@@ -13,7 +13,8 @@
 			.container-board {
 				width: 40em;
 				height: 100vh;
-				margin: 0 auto;
+				margin: 2em auto;
+				padding: 2em 0;
 				text-align: center;
 			}			
 			h1 {
@@ -28,7 +29,7 @@
 			}
 			.score-high,
 			.score-current {
-				width: 7em;
+				width: 35%;
 				margin: .5em;
 				padding: .5em;
 				font-size: 2em;
@@ -42,72 +43,304 @@
 				float: left;
 			}
 			.board {
-				width: 100%;
-				height: 30em;
-				margin-left: -.6em;
-				border: .6em solid black;	
+				width: 400px;
+				height: 300px;
+				margin: 10px auto;
+				border: 10px solid black;	
+			}
+			.block {
+				position: absolute;
+				width: 10px;
+				height: 10px;
+				margin: 0;
+				background-color: black;
+				border: 1px solid white;
 			}
 			.hidden {
 				display: none;
 			}
 		</style>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
 	</head>
 	<body>
 		<div class="container">
 			<div class="container-board">
 				<h1>CatDog</h1>
 				<div class="score">
-					<span class="score-current">Score: 0</span>
+					<span class="score-current"></span>
 					<span class="score-high">High Score: 0</span>
 				</div>
 				<div class="board"></div>
 			</div>
 		</div>
 		<script type="text/javascript">
+			// add a new function to JQuery
+			// will allow insertion at index of a JQuery object
+			$.prototype.insert = function(i,e) {
+				console.log(e);
+				if(e instanceof Array) {
+					var self = this;
+					e.forEach(function(e,j,a) {
+						self.splice(i+j, 0, e);
+					});
+
+				} else {
+					this.splice(i, 0, e);
+				}
+			};
+
 			// get board and board's attributes
 			var board = {
-				x: $('.board').offset().left,
-				y: $('.board').offset().top,
-				w: $('.board').width(),
-				h: $('.board').height(),
-				get: $('.board')
+				x		: Math.floor($('.board').offset().left + parseFloat($('.board').css('border-width'))),
+				y		: $('.board').offset().top,
+				w		: $('.board').width(),
+				h		: $('.board').height(),
+				s		: $('.board')
 			};
+
+			// score
+			var score = $('.score-current');
+			score.setScore = function(v) {
+					this.text('Score: ' + v);	
+					this.v = v;
+			}
+
+			// active of the game
+			var active = false;
 
 			// create the individual pieces of the body
-			var block = $('<div></div>').css({
-				'width'				: '1em',
-				'height'				: '1em',
-				'position'			: 'absolute',
-				'backgroundColor'	: 'black'
-			}).offset({
-				left					: 0,
-				top					: 0	
-			}).addClass('hidden');
+			var block = $('<div></div>')
+				.attr({ class : 'block' })
+				.offset({ left	: -1000, top : -1000 })
+				.addClass('hidden');
 
-			// create a catdog object		
-			var catdog = {
-				length	: 3,
-				head		: { 
-					x			: null,
-					y			: null,
-					display	: block.clone()
-				},
-				tail		: { 
-					x			: null,
-					y			: null,
-					display	: block.clone()
-				},
-				body		: $()
+			// place pieces on the board
+			for(var i=0; i<1000; i++) { board.s.append(block.clone()); }
+
+			// switch to javascript array
+			var blocks = $('.block').get();
+
+			// initiate a snake object		
+			var snake = null;
+
+			// create the apple
+			var apple = $(blocks.pop())
+				.attr({ id : 'apple', })
+				.css({ backgroundColor: 'red' });
+
+			// important parts of the snake
+			var head = null;
+			var tail = 0; // index of the tail
+
+			// movement values
+			var moveX = 10;
+			var moveY = 10;
+			var time  = 100;
+			var v     = {
+				x : 0,
+				y : moveY
 			};
 
-			// create the body of the catdog
-			for(var i=0; i<100; i++) { (block.clone()[0]); }
+			// Given [x,y], returns true if it is in a valid place in the board
+			// returns false if not
+			function valid(x, y) {
+				// make sure that x and y are in a valid grid location on the board
+				if( x % 10 != board.x % 10 || y % 10 != board.y % 10 ) { console.log('1'); return false; }
 
+				// check the x position
+				if( x < board.x - 1 || x + head.width() > board.x + board.w ) { console.log('2'); return false; }
+				
+				// check the y position
+				if( y < board.y - 1 || y + head.height() > board.y + board.h ) { console.log('3'); return false; }
+
+				// if not return true
+				return true;
+			}
+
+			// update heads location
+			function move() {
+				// save the old values
+				var xo = head.offset().left;
+				var yo = head.offset().top;
+			
+				// find next move with velocity
+				var x = xo + v.x;
+				var y = yo + v.y;
+		
+				// check to see if coordinates match those of the snake
+				var t = true;
+				snake.each( function(i,e) { 
+					if( e.offsetLeft == x && e.offsetTop == y ) t = false;
+					return t;
+				});	
+
+				// check if valid move
+				if( !t || !valid(x , y) ) {
+					end();
+				}
+
+				// move the head
+				head.offset({ left : x, top : y });
+				
+				// check if snake ate the apple
+				if( x == apple.offset().left && y == apple.offset().top ) {
+					// move the apple
+					placeApple();
+
+					// add 3 block to snake
+					var n = [ blocks.pop(), blocks.pop(), blocks.pop() ]
+					$(n).removeClass('hidden');
+					snake.insert(tail,n);
+
+					score.setScore(score.v + 10);
+	
+				}
+
+				// move the last block to where the head use to be
+				snake.eq(tail).offset({ left : xo, top : yo });
+				
+				// change the tail to the new last block
+				tail = (tail + 1) % (snake.length-1)
+
+			}
+
+			// movement keys
+			document.onkeydown = function(e) {
+				if(active) {
+					switch( e.keyCode ) {
+						case 37: // left arrow
+							e.preventDefault();
+							v.x = v.x == moveX ? moveX : -moveX;
+							v.y = 0;
+							move();
+							break;
+						case 38: // up arrow
+							e.preventDefault();
+							v.x = 0;
+							v.y = v.y == moveY ? moveY : -moveY;
+							move();
+							break;
+						case 39: // right arrow
+							e.preventDefault();
+							v.x = v.x == -moveX ? -moveX : moveX;
+							v.y = 0;
+							move();
+							break;
+						case 40: // down arrow
+							e.preventDefault();
+							v.x = 0;
+							v.y = v.y == -moveY ? -moveY : moveY;
+							move();
+							break;
+					}
+				} else {
+					switch( e.keyCode ) {
+						case 13: // enter
+							e.preventDefault();
+							clear();
+							start();
+							break;
+						case 32: // space bar
+							e.preventDefault();
+							clear();
+							start();
+							break;
+					}
+				}
+			};
+
+			function placeApple() {
+				// get random x and y values
+				while(true) {
+					var x = Math.floor( Math.random() * board.w );
+					x = x + ( 10 - x % 10 ) + board.x; // make sure that x is on grid
+
+					var y = Math.floor( Math.random() * board.h );
+					y = y + ( 10 - y % 10 ) + board.y; // make sure that y is on grid
+			
+					// check to see if coordinates match those of the snake
+					var t = true;
+					snake.each( function(i,e) { 
+						if( e.offsetLeft == x && e.offsetTop == y ) t = false;
+						return t;
+					});	
+
+					// x and y must be valid in order to continue
+					if( t && valid(x, y) ) break;
+				}
+	
+				$('#apple').offset({ left : x , top : y });
+			}
+
+			// set the speed of the animation
+			var speed = null;
 			function start() {
-				// place the head in center of the board
+				// set the game to active
+				console.log('here');
+				active = true;
 
+				// set the score of the game to 0
+				score.setScore(0);
+
+				// place the head in the center of the board
+				// check if it is a valid place first
+				var x = Math.floor(board.x + board.w / 2);
+				var y = Math.floor(board.y + board.h / 2);
+			
+				// create a snake object		
+				snake = $(blocks.pop())
+					.attr({ id : 'head' })
+					.add([ blocks.pop(), blocks.pop() ]);
+
+				// show snake
+				snake.removeClass('hidden');
+		
+				// save the head	
+				head = $('#head');
+
+				// place the pieces in the center of board
+				head.offset({ left : x, top : y });
+				snake.eq(1).offset({ left : x, top : y - head.height() });
+				snake.eq(0).offset({ left : x, top : y - 2 * head.height() });
+
+				// place the apple randomly on the board	
+				apple.removeClass('hidden');
+				placeApple();
+
+				// start the loop
+				speed = setInterval( move, time );
 			}	
+
+			// end the game
+			function end() {
+				// stop the animation
+				clearInterval(speed);
+
+				// set the game status to false
+				active = false;
+			}
+
+			// clear board for reset
+			function clear() {
+				// place all the snake blocks back into blocks
+				blocks = blocks.concat(
+					snake.addClass('hidden')
+					.offset({ left: -1000, top: -1000 })
+					.get()
+				);
+
+				// remove all of the snake bodys
+				snake = null;
+			
+				// reset velocity
+				v = { x : 0, y : moveY };
+
+				// make apple hidden again
+				apple.addClass('hidden');
+	
+			}
+
 			start();
 		</script>
 	</body>

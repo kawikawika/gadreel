@@ -127,7 +127,37 @@
 			var apple = $(blocks.pop())
 				.attr({ id : 'apple', })
 				.css({ backgroundColor: 'red' });
+				
+			// create the mother spider
+			var spider = $('<div></div>')
+				.attr({
+					left		: -1000,
+					top  		: -1000,
+					class 	: 'spider hidden'
+				})
+				.css({
+					width		: '50px',
+					height 	: '50px'
+				})
+				.append(
+					$('<img>')
+						.attr({
+							src : 'spider.gif'
+						})
+						.css({
+							maxWidth 	: '100%',
+							maxHeight 	: '100%',
+							margin		: 'auto',
+							display		: 'block'
+						})
+				)
+				.v = {
+					x : 0,
+					y : 0
+				}
 
+			// put the spider on the board
+				
 			// important parts of the snake
 			var head = null;
 			var tail = 0; // index of the tail
@@ -148,10 +178,10 @@
 				if( x % 10 != board.x % 10 || y % 10 != board.y % 10 ) { console.log('1'); return false; }
 
 				// check the x position
-				if( x < board.x - 1 || x + head.width() > board.x + board.w ) { console.log('2'); return false; }
+				if( x < board.x - 1 || x > board.x + board.w ) { console.log('2'); return false; }
 				
 				// check the y position
-				if( y < board.y - 1 || y + head.height() > board.y + board.h ) { console.log('3'); return false; }
+				if( y < board.y + 1 || y > board.y + board.h ) { console.log('3'); return false; }
 
 				// if not return true
 				return true;
@@ -179,6 +209,7 @@
 					end();
 				}
 
+				return; // TODO:: move the spider
 				// move the head
 				head.offset({ left : x, top : y });
 				
@@ -193,7 +224,6 @@
 					snake.insert(tail,n);
 
 					score.setScore(score.v + 10);
-	
 				}
 
 				// move the last block to where the head use to be
@@ -272,6 +302,38 @@
 				$('#apple').offset({ left : x , top : y });
 			}
 
+			function placeSpider() {
+				// get random x and y values
+				while(true) {
+
+					if( Math.random() > .5 ) {
+						var x = Math.floor( Math.random() * board.w );
+						x = x + ( 10 - x % 10 ) + board.x; // make sure that x is on grid
+			
+						var y = (Math.random() > .5) ? board.y : board.y + board.h;
+					} else {
+						var y = Math.floor( Math.random() * board.h );
+						y = y + ( 10 - y % 10 ) + board.y; // make sure that y is on grid
+					}
+			
+					// check to see if coordinates match those of the snake
+					var t = true;
+					snake.each( function(i,e) { 
+						if( e.offsetLeft == x && e.offsetTop == y ) t = false;
+						return t;
+					});	
+
+					// x and y must be valid in order to continue
+					if( t && valid(x, y) ) break;
+				}
+	
+				$('#snake')
+					.offset({ 
+						left	: x,
+						top	: y
+					});
+			}
+
 			// set the speed of the animation
 			var speed = null;
 			function start() {
@@ -290,7 +352,7 @@
 				snake = $(blocks.pop())
 					.attr({ id : 'head' })
 					.add([ blocks.pop(), blocks.pop() ]);
-
+					
 				// show snake
 				snake.removeClass('hidden');
 		
@@ -305,6 +367,9 @@
 				// place the apple randomly on the board	
 				apple.removeClass('hidden');
 				placeApple();
+
+				// TODO:: put spider on the board
+				placeSpider();
 
 				// start the loop
 				speed = setInterval( move, time );
@@ -340,6 +405,8 @@
 			}
 
 			start();
+		
+			
 		</script>
 	</body>
 </html>

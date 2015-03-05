@@ -133,11 +133,13 @@
 				.attr({
 					left		: -1000,
 					top  		: -1000,
-					class 	: 'spider hidden'
+					class 	: 'hidden',
+					id			: 'spider'
 				})
 				.css({
 					width		: '50px',
-					height 	: '50px'
+					height 	: '50px',
+					position : 'absolute'
 				})
 				.append(
 					$('<img>')
@@ -150,11 +152,13 @@
 							margin		: 'auto',
 							display		: 'block'
 						})
-				)
-				.v = {
-					x : 0,
-					y : 0
-				}
+				);
+			// set the veloctiy of the spider
+			spiderv = {
+				x : 0,
+				y : 0,
+				s : 10
+			};
 
 			// put the spider on the board
 				
@@ -178,7 +182,7 @@
 				if( x % 10 != board.x % 10 || y % 10 != board.y % 10 ) { console.log('1'); return false; }
 
 				// check the x position
-				if( x < board.x - 1 || x > board.x + board.w ) { console.log('2'); return false; }
+				if( x < board.x - 1 || x > board.x + board.w - 10 ) { console.log('2'); return false; }
 				
 				// check the y position
 				if( y < board.y + 1 || y > board.y + board.h ) { console.log('3'); return false; }
@@ -209,7 +213,6 @@
 					end();
 				}
 
-				return; // TODO:: move the spider
 				// move the head
 				head.offset({ left : x, top : y });
 				
@@ -221,6 +224,7 @@
 					// add 3 block to snake
 					var n = [ blocks.pop(), blocks.pop(), blocks.pop() ]
 					$(n).removeClass('hidden');
+
 					snake.insert(tail,n);
 
 					score.setScore(score.v + 10);
@@ -230,9 +234,52 @@
 				snake.eq(tail).offset({ left : xo, top : yo });
 				
 				// change the tail to the new last block
-				tail = (tail + 1) % (snake.length-1)
+				tail = (tail + 1) % (snake.length-1);
 
 			}
+
+			function moveSpider() {
+				// save the old values
+				var xo = spider.offset().left;
+				var yo = spider.offset().top;
+
+				// find next move with velocity
+				var x = xo + spiderv.x;
+				var y = yo + spiderv.y;
+
+				// check to see if coordinates match those of the snake
+				var t = true;
+				snake.each( function(i,e) { 
+					if( e.offsetLeft == x && e.offsetTop == y ) t = false;
+					return t;
+				});	
+		
+				// this means that the spider hit the snake...remove three bodies
+				if(!t) {
+					for(var i = 0; i < 3; i++) {
+
+						snake.eq(tail)
+							.addClass('hidden')
+							.offset({ left: -1000, top: -1000 })
+
+						blocks = blocks.concat(
+								snake.get(tail)
+						)
+
+						snake.splice(tail,1);
+						var tail = (tail + i + 1) % (snake.length-1);
+					}	
+				}
+
+				// check the x position
+				if( x < board.x - 1 || x > board.x + board.w - spider.width() ) { spiderv.x = -spiderv.x }
+				
+				// check the y position
+				if( y < board.y + 1 || y > board.y + board.h - spider.height()/2 ) { spiderv.y = -spiderv.y }
+
+				// move the spider
+				spider.offset({ left : x, top : y });
+			}	
 
 			// movement keys
 			document.onkeydown = function(e) {
@@ -302,37 +349,62 @@
 				$('#apple').offset({ left : x , top : y });
 			}
 
+			var spiderSpeed = null;
 			function placeSpider() {
 				// get random x and y values
-				while(true) {
-
+				// spider will be coming from the borders
+				if( Math.random() > .5 ) {
+					var x = Math.floor( Math.random() * board.w );
+					x = x + ( 10 - x % 10 ) + board.x; // make sure that x is on grid
+		
+					// y is either top border or bottom border
 					if( Math.random() > .5 ) {
-						var x = Math.floor( Math.random() * board.w );
-						x = x + ( 10 - x % 10 ) + board.x; // make sure that x is on grid
-			
-						var y = (Math.random() > .5) ? board.y : board.y + board.h;
-					} else {
-						var y = Math.floor( Math.random() * board.h );
-						y = y + ( 10 - y % 10 ) + board.y; // make sure that y is on grid
-					}
-			
-					// check to see if coordinates match those of the snake
-					var t = true;
-					snake.each( function(i,e) { 
-						if( e.offsetLeft == x && e.offsetTop == y ) t = false;
-						return t;
-					});	
+						// top border
+						var y = board.y + 10;
 
-					// x and y must be valid in order to continue
-					if( t && valid(x, y) ) break;
+						// determine velocity
+						spiderv.y = spiderv.s;
+						spiderv.x = ( x > board.x + board.w / 2 ) ? -spiderv.s : spiderv.s;
+					} else {
+						// bottom border
+						var y = board.y + board.h - 50;
+
+						// determine velocity
+						spiderv.y = -spiderv.s;
+						spiderv.x = ( x > board.x + board.w / 2 ) ? -spiderv.s : spiderv.s;
+					}
+					y = y + ( 10 - y % 10 ); // make sure that y is on grid
+				} else {
+					var y = Math.floor( Math.random() * board.h );
+					y = y + ( 10 - y % 10 ) + board.y; // make sure that y is on grid
+
+					// x is either left border or right border
+					if( Math.random() > .5 ) {
+						// left border
+						var x = board.x + 10;
+
+						// determine velocity
+						spiderv.x = spiderv.s;
+						spiderv.y = ( y > board.y + board.h / 2 ) ? -spiderv.s : spiderv.s;
+					} else {
+						// right border
+						var x = board.x + board.w - 50;
+
+						// determine velocity
+						spiderv.x = -spiderv.s;
+						spiderv.y = ( y > board.y + board.h / 2 ) ? -spiderv.s : spiderv.s;
+					}
+
 				}
-	
-				$('#snake')
-					.offset({ 
-						left	: x,
-						top	: y
-					});
+
+				console.log(x, y);
+				spider.offset({ left	: x, top	: y })
+					.removeClass('hidden');
+
+				board.s.append(spider);
+				spiderSpeed = setInterval(moveSpider, 100);
 			}
+
 
 			// set the speed of the animation
 			var speed = null;
@@ -351,7 +423,7 @@
 				// create a snake object		
 				snake = $(blocks.pop())
 					.attr({ id : 'head' })
-					.add([ blocks.pop(), blocks.pop() ]);
+					.add([ blocks.pop(), blocks.pop() ])
 					
 				// show snake
 				snake.removeClass('hidden');
@@ -379,6 +451,7 @@
 			function end() {
 				// stop the animation
 				clearInterval(speed);
+				clearInterval(spiderSpeed);
 
 				// set the game status to false
 				active = false;

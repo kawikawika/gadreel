@@ -1,2 +1,2 @@
 # gadreel
-This repository will hold my school work from now on.
+This repository holds all of my code.
